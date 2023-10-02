@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import Category from "../models/categoryModel";
 import Post from "../models/postsModel";
 import { NextFunction, Request, Response } from "express";
 
@@ -17,6 +17,15 @@ export const createPost = async (
       category_id,
       created_at: Date.now(),
     });
+
+    // const newCat = await Category.findByIdAndUpdate(
+    //   category_id,
+    //   {
+    //     $push: { post_id: newPost._id },
+    //   },
+    //   { new: true }
+    // );
+    // console.log(newCat);
 
     return res.status(201).json({
       status: "success",
@@ -129,4 +138,28 @@ export const deletePost = async (
       message: "Something went wrong. Please try again after sometime.",
     });
   }
+};
+
+// GET LATEST POST
+export const getLatestPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const posts = await Post.aggregate([
+    {
+      $group: {
+        _id: "$category_id",
+        posts: {
+          $push: "$$ROOT",
+        },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    message: "Post created successfully",
+    data: posts,
+  });
 };

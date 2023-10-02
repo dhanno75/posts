@@ -1,8 +1,8 @@
 import express from "express";
-// import cors from "cors";
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import postRouter from "./routes/postsRoutes";
+import categoryRouter from "./routes/categoryRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,7 +15,6 @@ mongoose
 
 // Body parser
 app.use(express.json());
-// app.use(cors());
 
 // Rules of our API
 app.use((req, res, next) => {
@@ -39,6 +38,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", postRouter);
+app.use("/category", categoryRouter);
 
 app.listen(PORT, () =>
   console.log(`The server is connected to port: ${PORT} ☕☕`)
